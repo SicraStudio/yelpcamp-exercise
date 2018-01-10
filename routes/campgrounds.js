@@ -10,8 +10,16 @@ router.get('/', function (req, res) {
     if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         Campground.find({ name: regex }, function (err, allCampgrounds) {
-            if (err) {
+            if (err || allCampgrounds.length < 1) {
                 console.log(err);
+                req.flash('error', 'No campgrounds found!');
+                Campground.find({}, function (err, allCampgrounds) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.render('campgrounds/index', { campgrounds: allCampgrounds, page: 'campgrounds' });
+                    }
+                });
             } else {
                 res.render('campgrounds/index', { campgrounds: allCampgrounds, page: 'campgrounds' });
             }
