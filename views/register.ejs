@@ -1,0 +1,46 @@
+<% include ./partials/header %>
+
+<div class="row">
+    <h1 style="text-align: center;">Sign up!</h1>
+
+    <div style="width: 30%; margin: 25px auto;">
+
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input class="form-control" type="text" name="username" id="username" placeholder="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input class="form-control" type="password" name="password" id="password" placeholder="password">
+            </div>
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input class="form-control" type="text" name="first_name" id="first_name" placeholder="first name">
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input class="form-control" type="text" name="last_name" id="last_name" placeholder="last name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" type="email" name="email" id="email" placeholder="example@example.com">
+            </div>
+            <div class="form-group">
+                <label for="avatar">Avatar</label>
+                <input class="form-control" type="text" name="avatar" id="avatar" placeholder="avatar url">
+            </div>
+            <div class="form-group">
+                <label for="admin_code">Code</label>
+                <input class="form-control" type="text" name="admin_code" id="admin_code" placeholder="insert a code if you have one">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary btn-block">Sign Up!</button>
+            </div>            
+        </form>
+        <a href="/campgrounds">Go Back!</a>
+    </div>
+
+</div>
+
+<% include ./partials/footer %>

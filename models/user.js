@@ -1,0 +1,23 @@
+var mongoose = require('mongoose');
+// stuff for auth
+var passportLocalMongoose = require('passport-local-mongoose');
+var bcrypt = require('bcrypt-nodejs');
+
+var userSchema = new mongoose.Schema(
+    {
+        username: {type: String, unique: true, required: true},
+        password: String,
+        avatar: String,
+        firstName: String,
+        lastName: String,
+        email: { type: String, unique: true, required: true },
+        resetPasswordToken: String,
+        resetPasswordExpires: Date,
+        isAdmin: {type: Boolean, default: false}
+    }
+);
+
+// plugin the auth to the Schema
+userSchema.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('User', userSchema);

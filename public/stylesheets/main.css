@@ -1,0 +1,28 @@
+.thumbnail img {
+    width: 100%;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+}
+
+.delete-form {
+    display: inline;
+}
+
+.list-group li {
+    list-style: none;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+#profile_pic {
+    padding: 10px;
+}
