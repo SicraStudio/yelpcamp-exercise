@@ -3,6 +3,33 @@ var router = express.Router();
 var Campground = require('../models/campground');
 var middleware = require('../middleware');
 var geocoder = require('geocoder');
+// CLOUDINARY SET UP AND FILE
+var multer = require('multer');
+
+var storage = multer.diskStorage({
+    file: function(req, file, callback) {
+        callback(null, Date.now() + file.originalname);
+    }
+});
+
+var imageFilter = function(req, file, cb) {
+    // accept image files only
+    if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+    
+};
+
+var upload = multer({ storage: storage, fileFilter: imageFilter });
+
+var cloudinary = require('cloudinary');
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // INDEX - show the camps
 router.get('/', function (req, res) {
@@ -37,31 +64,48 @@ router.get('/', function (req, res) {
 });
 
 // CREATE - add a new campground to DB
-router.post('/', middleware.isLoggedIn, function (req, res) {
+router.post('/', middleware.isLoggedIn, upload.single('image'), function (req, res) {
     // get data from form and add data to the mock array
-    var name = req.body.name;
-    var image = req.body.image;
-    var price = req.body.price;
-    var description = req.body.description;
-    var author = {
+    //var name = req.body.name;
+    //var image = req.body.image;
+    //var price = req.body.price;
+    //var description = req.body.description;
+    /*var author = {
         id: req.user._id,
         username: req.user.username
-    }
-    console.log(req.body.location);
-    geocoder.geocode(req.body.location, function(err, data) {
-        console.log(data);
-        var lat = data.results[0].geometry.location.lat;
-        var lng = data.results[0].geometry.location.lng;
-        var location = data.results[0].formatted_address;
-        var newCamp = { name: name, price: price, image: image, description: description, location: location, lat: lat, lng: lng, author: author };
-        // create a new camp and save to the database
-        Campground.create(newCamp, function (err, newCampground) {
+    }*/
+    
+    cloudinary.uploader.upload(req.file.path, function(result) {
+        // add cloudinary url for the image to the campground object under image property
+        req.body.campground.image = result.secure_url;
+        // add author
+        req.body.campground.author = {
+            id: req.user._id,
+            username: req.user.username
+        }
+        // add location parsed to the campground
+        console.log(req.body.location);
+        geocoder.geocode(req.body.location, function(err, data) {
+            console.log(data);
             if (err) {
                 console.log(err);
-            } else {
-                res.redirect('/campgrounds');
+                req.flash('error', err.message);
+                return res.redirect('back');
             }
-        });    
+            req.body.campground.lat = data.results[0].geometry.location.lat;
+            req.body.campground.lng = data.results[0].geometry.location.lng;
+            req.body.campground.location = data.results[0].formatted_address;
+            //var newCamp = { name: name, price: price, image: image, description: description, location: location, lat: lat, lng: lng, author: author };
+            // create a new camp and save to the database
+            Campground.create(req.body.campground, function (err, newCampground) {
+                if (err) {
+                    console.log(err);
+                    req.flash('error', err.message);
+                    return res.redirect('back');
+                }
+                res.redirect('/campgrounds/' + newCampground.id);
+            });    
+        });
     });
 });
 

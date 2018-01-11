@@ -101,13 +101,13 @@ router.post('/forgot', function(req, res) {
             var stmpTransport = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                    user: 'sicrastudio@gmail.com',
+                    user: process.env.MAIL_ADDRESS,
                     pass: process.env.GMAILPW
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: 'sicrastudio@gmail.com',
+                from: process.env.MAIL_ADDRESS,
                 subject: 'YelpCamp Password Reset',
                 text: 'You are receiving this because you (or someone else) have requested the reset of your password in our site.' + '\n\n' +
                     'Please, click on the following link, or paste this into your web browser to complete the process: ' +'\n' +
@@ -121,7 +121,7 @@ router.post('/forgot', function(req, res) {
             });
         }
     ], function(err){
-        if (err) return next(err);
+        if (err) return next(err); // TODO: check if is 'done' instead of 'next'
         res.redirect('/forgot');
     });
 
@@ -168,13 +168,13 @@ router.post('/reset/:token', function(req, res) {
             var stmpTransport = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                    user: 'sicrastudio@gmail.com',
+                    user: process.env.MAIL_ADDRESS,
                     pass: process.env.GMAILPW
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: 'sicrastudio@gmail.com',
+                from: process.env.MAIL_ADDRESS,
                 subject: 'Your Password in YelpCamp has been changed',
                 text: 'Hello,\n\n' + 
                     'This is a confirmation that the password for your account ' + user.email + ' has just been cahnged.\n\n' + 
