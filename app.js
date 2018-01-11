@@ -23,7 +23,7 @@ var campgroundRoutes = require('./routes/campgrounds'),
     commentRoutes    = require('./routes/comments'),
     indexRoutes       = require('./routes/index');
 
-console.log(process.env.DATABASEURL);
+
 /* DB SETTING ------- MONGOOSE */
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASEURL);

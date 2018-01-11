@@ -95,7 +95,6 @@ router.post('/', middleware.isLoggedIn, upload.single('image'), function (req, r
             req.body.campground.lat = data.results[0].geometry.location.lat;
             req.body.campground.lng = data.results[0].geometry.location.lng;
             req.body.campground.location = data.results[0].formatted_address;
-            //var newCamp = { name: name, price: price, image: image, description: description, location: location, lat: lat, lng: lng, author: author };
             // create a new camp and save to the database
             Campground.create(req.body.campground, function (err, newCampground) {
                 if (err) {
