@@ -124,7 +124,7 @@ router.get('/:id', function (req, res) {
             res.redirect('back');
         } else {
             // render show template with that campground
-            res.render('campgrounds/show', { campground: foundCampground });
+            res.render('campgrounds/show', { campground: foundCampground, gmaps_api_key: process.env.GMAPS_API_KEY });
         }
     });
 });
