@@ -26,17 +26,19 @@
                 <label for="email">Email</label>
                 <input class="form-control" type="email" name="email" id="email" placeholder="example@example.com">
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="avatar">Avatar</label>
                 <input class="form-control" type="text" name="avatar" id="avatar" placeholder="avatar url">
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="admin_code">Code</label>
                 <input class="form-control" type="text" name="admin_code" id="admin_code" placeholder="insert a code if you have one">
             </div>
+            <div class="g-recaptcha" data-sitekey="<%= recaptcha_site_key %>"></div>
+            <!-- <div class="g-recaptcha" data-sitekey="6Lc3cUAUAAAAABlv6fJg6sws8blStK_7c4fPSz8V"></div> -->
             <div class="form-group">
                 <button class="btn btn-lg btn-primary btn-block">Sign Up!</button>
-            </div>            
+            </div> 
         </form>
         <a href="/campgrounds">Go Back!</a>
     </div>

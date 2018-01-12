@@ -6,6 +6,7 @@ var Campground = require('../models/campground');
 var async = require('async');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
+var request = require('request');
 
 // landing page
 router.get('/', function (req, res) {
@@ -18,32 +19,54 @@ router.get('/', function (req, res) {
 
 // SHOW THE REGISTER FORM
 router.get('/register', function (req, res) {
-    res.render('register', { page: 'register' });
+    res.render('register', { page: 'register', recaptcha_site_key: process.env.RECAPTCHA_DATA_SITEKEY });
 });
 
 // HANDLE SIGN UP LOGIC
 router.post('/register', function (req, res) {
-    var newUser = new User({
-        username: req.body.username,
-        avatar: req.body.avatar,
-        firstName: req.body.first_name,
-        lastName: req.body.last_name,
-        email: req.body.email
-     });
-    var pass = req.body.password;
-
-    if (req.body.admin_code === process.env.ADMINSECRETCODE) {
-        newUser.isAdmin = true;
+    
+    // Recaptcha logic
+    const captcha = req.body["g-recaptcha-response"];
+    if (!captcha) {
+        console.log(req.body);
+        req.flash('error', 'Please select Captcha!');
+        return res.redirect('/register');
     }
-
-    User.register(newUser, pass, function (err, user) {
-        if (err) {
-            console.log(err);
-            return res.render('register', { error: err.message });
+    // secret key
+    var secretKey = process.env.CAPTCHA_SK;
+    // verify url
+    var verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captcha}&remoteip=${req.connection.remoteAddress}`;
+    // make request to verify URL
+    request.get(verifyURL, function(err, response, body) {
+       // if not successful
+       if (body.succes !== undefined && !body.successs) {
+           req.flash('error', 'Captcha Failed!');
+           return res.redirect('/register');
+       }
+    
+    
+        var newUser = new User({
+            username: req.body.username,
+            avatar: "/images/no-user-image-square.jpg",
+            firstName: req.body.first_name,
+            lastName: req.body.last_name,
+            email: req.body.email
+         });
+        var pass = req.body.password;
+    
+        if (req.body.admin_code === process.env.ADMINSECRETCODE) {
+            newUser.isAdmin = true;
         }
-        passport.authenticate('local')(req, res, function () {
-            req.flash('success', "Successfully Signed Up! Nice to meet you " + user.username);
-            res.redirect('/campgrounds');
+    
+        User.register(newUser, pass, function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.render('register', { error: err.message });
+            }
+            passport.authenticate('local')(req, res, function () {
+                req.flash('success', "Successfully Signed Up! Nice to meet you " + user.username);
+                res.redirect('/campgrounds');
+            });
         });
     });
 });

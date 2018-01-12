@@ -27,6 +27,7 @@ var campgroundRoutes = require('./routes/campgrounds'),
 /* DB SETTING ------- MONGOOSE */
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASEURL);
+//mongoose.connect('mongodb://localhost/yelp_camp_db');
 // SEEDING DB ////
 // seedDB();
 
