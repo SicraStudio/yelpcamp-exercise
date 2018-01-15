@@ -21,7 +21,8 @@ require('dotenv').config();
 /* REQUIRING ALL ROUTES FILES */
 var campgroundRoutes = require('./routes/campgrounds'),
     commentRoutes    = require('./routes/comments'),
-    indexRoutes       = require('./routes/index');
+    indexRoutes      = require('./routes/index'),
+    contactRoutes    = require('./routes/contact');
 
 
 /* DB SETTING ------- MONGOOSE */
@@ -78,6 +79,7 @@ app.use(function(req, res, next) {
 app.use('/', indexRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/contact', contactRoutes);
 
 
 
